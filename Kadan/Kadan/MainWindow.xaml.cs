@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Forms;
 
 namespace Kadan
 {
@@ -21,30 +22,37 @@ namespace Kadan
     public partial class MainWindow : Window
     {
         private MusicManager musicManager;
-        
-        public MainWindow()
-        {
+        //Main method
+        public MainWindow() {
             InitializeComponent();
-
+            
             MusicManager musicManager = new MusicManager();
-            musicManager.RegisterDelegate(new MusicManager.MusicManagerDelegate(showMessage));  
+            musicManager.RegisterMessageDelegate(new MusicManager.MusicManagerMessageDelegate(gotMessage));
+            musicManager.RegisterSuccessErrorDelegate(new MusicManager.MusicManagerSuccessDelegate(gotListFromMetadata));  
             this.musicManager = musicManager;
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
-        {
-            if (textBox.Text != @"")
-            {
-                musicManager.getAllAudioFromFolderWithPath(textBox.Text);
-                textBox.Text = @"";
-            }
+        //Actions
+        private void button_Click(object sender, RoutedEventArgs e) {
+
+
+            var dialog = new FolderBrowserDialog();
+            DialogResult result = dialog.ShowDialog();
+
+            
+            string path = dialog.SelectedPath;
+            dataGrid.ItemsSource = null;
+            musicManager.getAllAudioFromFolderWithPath(path);
+                 
         }
 
-        private void showMessage(String message)
-        {
+        //Delegate
+        private void gotMessage(String message) {
             label.Content = message;
-            Console.WriteLine(message);
         }
 
+        private void gotListFromMetadata(List<Song> list) {
+            dataGrid.ItemsSource = list;
+        }
     }
 }

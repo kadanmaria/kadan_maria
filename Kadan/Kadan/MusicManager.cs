@@ -10,56 +10,55 @@ namespace Kadan
 {
     class MusicManager
     {
-        public delegate void MusicManagerDelegate(string message);
-        MusicManagerDelegate myDelegate;
-        private int count { get; set; }
+        //properties
+        private int count;
+        public int Count { get; set; }
 
-        public void RegisterDelegate(MusicManagerDelegate myDelegate)
-        {
-            this.myDelegate = myDelegate;
+        //Delegate
+        public delegate void MusicManagerMessageDelegate(string message);
+        MusicManagerMessageDelegate messageDelegate;
+
+        public delegate void MusicManagerSuccessDelegate(List<Song> dictionary);
+        MusicManagerSuccessDelegate successDelegate;
+
+        public void RegisterMessageDelegate(MusicManagerMessageDelegate myDelegate) {
+            this.messageDelegate = myDelegate;
+        }
+        public void RegisterSuccessErrorDelegate(MusicManagerSuccessDelegate myDelegate) {
+            this.successDelegate = myDelegate;
         }
 
-        public MusicManager() {
-        }
-
+        //Methods
         public void getAllAudioFromFolderWithPath(string folderPath)
-        { 
-            DirectoryInfo dir = new DirectoryInfo(folderPath);
-
-            if (dir.Exists)
+        {
+            if (folderPath != null)
             {
-                foreach (FileInfo file in dir.GetFiles("*.mp3"))
+                DirectoryInfo dir = new DirectoryInfo(folderPath);
+
+                if (dir.Exists)
                 {
-                    var audioFile = TagLib.File.Create(file.FullName);
-                    Console.WriteLine("Album: {0}\n\n", audioFile.Tag.Album);
-                    count++;
+                    List<Song> songs = new List<Song>();
+
+                    foreach (FileInfo file in dir.GetFiles("*.mp3"))
+                    {
+                        var audioFile = TagLib.File.Create(file.FullName);
+                        Song song = new Song(audioFile);
+                        songs.Add(song);
+                        count++;
+                    }
+                    if (count == 0)
+                    {
+                        messageDelegate("There are no files in this directory. Try another one please!");
+                    }
+                    else {
+                        messageDelegate(folderPath);
+                        successDelegate(songs);
+                    }
                 }
-                if (count == 0 && myDelegate != null)
-                {
-                    myDelegate("There are no files in this directory. Try another one please!");
-                }
-                else if (count != 0 && myDelegate != null) {
-                    myDelegate(folderPath);
+                else {
+                    messageDelegate("There is no such directory. Try again please!");
                 }
             }
-            else {
-                if (myDelegate != null)
-                    myDelegate("There is no such directory. Try again please!");
-            }
-
         }
-        
-        public void wrileInfoFromFile(String path) {
-            var audioFile = TagLib.File.Create(path);
-
-            Console.WriteLine("Album: {0}\nSinger: {1}\nTitle: {2}\nYear: {3}\nDuration: {4}"
-                , audioFile.Tag.Album
-                , String.Join(", ", audioFile.Tag.Performers)
-                , audioFile.Tag.Title
-                , audioFile.Tag.Year
-                , audioFile.Properties.Duration.ToString("mm\\:ss"));
-        }
-
-        
     }
 }
