@@ -22,28 +22,35 @@ namespace Kadan
     public partial class MainWindow : Window
     {
         private MusicManager musicManager;
+
         //Main method
         public MainWindow() {
             InitializeComponent();
-            
+
             MusicManager musicManager = new MusicManager();
             musicManager.RegisterMessageDelegate(new MusicManager.MusicManagerMessageDelegate(gotMessage));
-            musicManager.RegisterSuccessErrorDelegate(new MusicManager.MusicManagerSuccessDelegate(gotListFromMetadata));  
+            musicManager.RegisterSuccessDelegate(new MusicManager.MusicManagerSuccessDelegate(gotListFromMetadata));  
             this.musicManager = musicManager;
+
+            this.musicManager.initializeWithMusicFromDB();
         }
 
         //Actions
-        private void button_Click(object sender, RoutedEventArgs e) {
-
-
+        private void button_GetClick(object sender, RoutedEventArgs e) {
             var dialog = new FolderBrowserDialog();
-            DialogResult result = dialog.ShowDialog();
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                dataGrid.ItemsSource = null;
+                string path = dialog.SelectedPath;
+               // path = "D:/Music/test";
 
-            
-            string path = dialog.SelectedPath;
-            dataGrid.ItemsSource = null;
-            musicManager.getAllAudioFromFolderWithPath(path);
-                 
+                musicManager.getAllAudioFromFolderWithPath(path);
+            }
+        }
+
+        private void button_ClearClick(object sender, RoutedEventArgs e)
+        {
+            musicManager.clearAllAudioFromDB();
         }
 
         //Delegate

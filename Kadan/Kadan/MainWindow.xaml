@@ -8,7 +8,8 @@
         Title="MainWindow" Height="600" Width="1000">
     <Grid>
         <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="50,50,0,0" VerticalAlignment="Top" Height="400" Width="900"/>
-        <Button x:Name="button" Content="Get music!" HorizontalAlignment="Left" Margin="850,500,0,0" VerticalAlignment="Top" Width="100" Height="40" Click="button_Click"/>
+        <Button x:Name="buttonGet" Content="Get music!" HorizontalAlignment="Left" Margin="850,500,0,0" VerticalAlignment="Top" Width="100" Height="40" Click="button_GetClick"/>
         <Label x:Name="label" Content="Choose directory, please" HorizontalAlignment="Left" Margin="50,475,0,0" VerticalAlignment="Top" Width="750"/>
+        <Button x:Name="buttonClear" Content="Clear DB!" HorizontalAlignment="Left" Margin="732,500,0,0" VerticalAlignment="Top" Width="100" Height="40" Click="button_ClearClick"/>
     </Grid>
 </Window>

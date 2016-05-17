@@ -11,13 +11,24 @@ namespace Kadan
     {
         private SQLiteConnection sqlConnection;
         private SQLiteCommand sqlCommand;
-        private SQLiteDataAdapter DB;
-       // private DataSet DS = new DataSet();
-       // private DataTable DT = new DataTable();
+
+        public SQLConnector() {
+            if (!System.IO.File.Exists("Music.sqlite"))
+            {
+                CreateTable();
+            }            
+        }
 
         private void SetConnection()
         {
-            sqlConnection = new SQLiteConnection("Data Source=Music.db;Version=3;New=False;Compress=True;");
+            sqlConnection = new SQLiteConnection("Data Source=Music.sqlite;Version=3;New=False;Compress=True;");
+        }
+        
+        private void CreateTable()
+        {
+            SQLiteConnection.CreateFile("Music.sqlite");
+            string sql = "create table songs (title varchar(30), performer varchar(30), duration varchar(30), album varchar(30), year int, path varchar(30))";
+            ExecuteQuery(sql);
         }
 
         private void ExecuteQuery(string txtQuery)
@@ -30,19 +41,33 @@ namespace Kadan
             sqlConnection.Close();
         }
 
-        private void LoadData()
+        public void uploadToDB(List<Song> songs) {
+            foreach (Song song in songs) {
+                ExecuteQuery("insert or replace into songs (title, performer, duration, album, year, path) values ('" + song.Title + "', '" + song.Performer + "', '" + song.Duration + "', '" + song.Album + "', " + song.Year + ", '" + song.Path + "' )");
+            }
+        }
+        public void clearDB()
+        {
+            SetConnection();
+            ExecuteQuery("delete from songs");  
+        }
+
+        public List<Song> LoadData()
         {
             SetConnection();
             sqlConnection.Open();
             sqlCommand = sqlConnection.CreateCommand();
-            string CommandText = "select id, desc from mains";
-            DB = new SQLiteDataAdapter(CommandText, sqlConnection);
-        //    DS.Reset();
-        //    DB.Fill(DS);
-        //    DT = DS.Tables[0];
-        //    Grid.DataSource = DT;
-            sqlConnection.Close();
-        }
+            sqlCommand.CommandText = "select title, performer, duration, album, year, path from songs";
+            SQLiteDataReader reader = sqlCommand.ExecuteReader();
 
+            List<Song> songs = new List<Song>();
+            while (reader.Read())
+            {
+                Song song = new Song(reader);
+                songs.Add(song);
+            }
+            sqlConnection.Close();
+            return songs;
+        }
     }
 }

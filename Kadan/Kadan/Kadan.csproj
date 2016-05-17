@@ -84,6 +84,8 @@
     </ApplicationDefinition>
     <Compile Include="Song.cs" />
     <Compile Include="SQLConnector.cs" />
+    <Compile Include="SQLite.cs" />
+    <Compile Include="SQLiteAsync.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
