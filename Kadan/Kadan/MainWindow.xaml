@@ -14,6 +14,7 @@
         <Button x:Name="buttonClear" Content="Clear DB!" HorizontalAlignment="Left" Margin="732,500,0,0" VerticalAlignment="Top" Width="100" Height="40" Click="button_ClearClick"/>
         <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="31" Margin="219,449,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="134"/>
         <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="58,449,0,0" VerticalAlignment="Top" Width="137" Height="31"/>
-        <Button x:Name="button" Content="Search" HorizontalAlignment="Left" Margin="253,500,0,0" VerticalAlignment="Top" Width="100" Height="40" Click="button_Click"/>
+        <Button x:Name="button" Content="Search" HorizontalAlignment="Left" Margin="95,500,0,0" VerticalAlignment="Top" Width="100" Height="40" Click="button_Click"/>
+        <Button x:Name="Back" Content="Back" HorizontalAlignment="Left" Margin="253,500,0,0" VerticalAlignment="Top" Width="100" Height="40" Click="Back_Click"/>
     </Grid>
 </Window>

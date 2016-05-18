@@ -107,7 +107,7 @@ namespace Kadan
         public void searchInDBWithOptions(Dictionary<String, String>  args) {
             string query = "select id, title, performer, duration, album, year, fullName from songs where";
             foreach (var item in args.Keys) {
-                query = string.Concat(query," " + item + " = '" + args[item] + "'");
+                query = string.Concat(query," " + item + " like '%" + args[item] + "%'");
             }
             successDelegate(connector.LoadData(query));
         }

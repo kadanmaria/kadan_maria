@@ -14,7 +14,7 @@ namespace Kadan
 
         public SQLConnector()
         {
-          //  if (!System.IO.File.Exists("Music.sqlite"))
+            if (!System.IO.File.Exists("Music.sqlite"))
             {
                 CreateTable();
             }
@@ -29,7 +29,6 @@ namespace Kadan
         {
             SQLiteConnection.CreateFile("Music.sqlite");
             ExecuteQuery("create table songs (id INTEGER PRIMARY KEY, title varchar(30), performer varchar(30), duration varchar(30), album varchar(30), year int, fullName varchar(30))");
-            
         }
 
         private void ExecuteQuery(string txtQuery)
@@ -63,10 +62,13 @@ namespace Kadan
                 {
                     foreach (string id in idList)
                     {
-                        ExecuteQuery("delete from songs where id = " + id);
+                        ExecuteQuery("update songs set title ='" + song.Title + "', performer ='" + song.Performer + "', duration ='" + song.Duration + "', album ='" + song.Album + "', year =" + song.Year + ", fullName ='" + song.FullName + "' where id=" + id);
                     }
                 }
-                ExecuteQuery("insert into songs (title, performer, duration, album, year, fullName) values ('" + song.Title + "', '" + song.Performer + "', '" + song.Duration + "', '" + song.Album + "', " + song.Year + ", '" + song.FullName + "')");
+                else
+                {
+                    ExecuteQuery("insert into songs (title, performer, duration, album, year, fullName) values ('" + song.Title + "', '" + song.Performer + "', '" + song.Duration + "', '" + song.Album + "', " + song.Year + ", '" + song.FullName + "')");
+                }
             }
         }
 

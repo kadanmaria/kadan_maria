@@ -92,9 +92,18 @@ namespace Kadan
         private void button_Click(object sender, RoutedEventArgs e)
         {
             Dictionary<String, String> args = new Dictionary<string, string>();
-            args.Add(comboBox.SelectedValue.ToString().ToLower(), textBox.Text);
+            if (comboBox.SelectedValue != null && textBox.Text != null)
+            {
+                args.Add(comboBox.SelectedValue.ToString().ToLower(), textBox.Text);
+                musicManager.searchInDBWithOptions(args);
+            }
 
-            musicManager.searchInDBWithOptions(args);
+            
+        }
+
+        private void Back_Click(object sender, RoutedEventArgs e)
+        {
+            musicManager.initializeWithMusicFromDB();
         }
     }
 }
