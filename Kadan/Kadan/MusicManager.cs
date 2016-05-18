@@ -77,5 +77,13 @@ namespace Kadan
                 }
             }
         }
+
+        public void saveUpdatesToMetadata(List<Song> songs) {
+            foreach (var song in songs) {
+                var path = song.Path;
+
+            }
+        }
     }
+
 }

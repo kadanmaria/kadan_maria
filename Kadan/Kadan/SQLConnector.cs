@@ -27,7 +27,7 @@ namespace Kadan
         private void CreateTable()
         {
             SQLiteConnection.CreateFile("Music.sqlite");
-            ExecuteQuery("create table songs (title varchar(30), performer varchar(30), duration varchar(30), album varchar(30), year int, path varchar(30))");
+            ExecuteQuery("create table songs (id INTEGER PRIMARY KEY, title varchar(30), performer varchar(30), duration varchar(30), album varchar(30), year int, path varchar(30))");
         }
 
         private void ExecuteQuery(string txtQuery)
@@ -40,11 +40,16 @@ namespace Kadan
             sqlConnection.Close();
         }
 
+        public void updateSongInDB(Song song) {
+            ExecuteQuery("UPDATE songs SET title = '" + song.Title + "', performer = '" + song.Performer + "', duration = '" + song.Duration + "', album = '" + song.Album + "', year = " + song.Year + ", path =  '" + song.Path + "' WHERE id = " + song.Id);
+        }
+
         public void uploadToDB(List<Song> songs) {
             foreach (Song song in songs) {
                 ExecuteQuery("insert or replace into songs (title, performer, duration, album, year, path) values ('" + song.Title + "', '" + song.Performer + "', '" + song.Duration + "', '" + song.Album + "', " + song.Year + ", '" + song.Path + "' )");
             }
         }
+
         public void clearDB()
         {
             SetConnection();
@@ -56,7 +61,7 @@ namespace Kadan
             SetConnection();
             sqlConnection.Open();
             sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandText = "select title, performer, duration, album, year, path from songs";
+            sqlCommand.CommandText = "select id, title, performer, duration, album, year, path from songs";
             SQLiteDataReader reader = sqlCommand.ExecuteReader();
 
             List<Song> songs = new List<Song>();

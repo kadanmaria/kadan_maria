@@ -70,6 +70,15 @@ namespace Kadan
         private void gotListFromMetadata(List<Song> list) {
             dataGrid.ItemsSource = list;
         }
-        
+
+        private void updateMeta_Click(object sender, RoutedEventArgs e)
+        {
+            List<Song> songs = new List<Song>();
+            foreach (var item in dataGrid.Items) {
+                var song = item as Song;
+                songs.Add(song);
+                Console.WriteLine(song.Title);
+            }
+        }
     }
 }
