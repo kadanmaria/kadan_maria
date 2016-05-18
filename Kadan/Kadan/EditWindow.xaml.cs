@@ -17,10 +17,15 @@ namespace Kadan
     public partial class EditWindow : Window
     {
         public Song SelectedSong { get; set; }
+        private MusicManager musicManager;
 
         public EditWindow()
         {
             InitializeComponent();
+
+            MusicManager musicManager = new MusicManager();
+            musicManager.RegisterMessageDelegate(new MusicManager.MusicManagerMessageDelegate(gotMessage));
+            this.musicManager = musicManager;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -37,10 +42,13 @@ namespace Kadan
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            string previousTitle = SelectedSong.Title;
-            Song song = new Song(SelectedSong.Id, this.TitleTextBox.Text, this.PerformerTextBox.Text, this.AlbumTextBox.Text, this.DurationTextBox.Text, this.YearTextBox.Text, this.PathTextBox.Text);
-            SQLConnector connector = new SQLConnector();
-            connector.updateSongInDB(song, previousTitle);
+            Song updatedSong = new Song(SelectedSong);
+            updatedSong.Title = this.TitleTextBox.Text;
+            updatedSong.Album = this.AlbumTextBox.Text;
+            updatedSong.Performer = this.PerformerTextBox.Text;
+            updatedSong.Year = this.YearTextBox.Text;
+            
+            this.musicManager.saveUpdatesToMetadata(updatedSong);
 
             Window_Closing(sender, null);
         }
@@ -52,7 +60,12 @@ namespace Kadan
             this.PerformerTextBox.Text = this.SelectedSong.Performer;
             this.YearTextBox.Text = this.SelectedSong.Year;
             this.DurationTextBox.Text = this.SelectedSong.Duration;
-            this.PathTextBox.Text = this.SelectedSong.Path;
+        }
+
+        //Delegate
+        private void gotMessage(String message)
+        {
+            MessageBox.Show(message);
         }
     }
 }

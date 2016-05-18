@@ -12,22 +12,24 @@ namespace Kadan
         private SQLiteConnection sqlConnection;
         private SQLiteCommand sqlCommand;
 
-        public SQLConnector() {
-            if (!System.IO.File.Exists("Music.sqlite"))
+        public SQLConnector()
+        {
+          //  if (!System.IO.File.Exists("Music.sqlite"))
             {
                 CreateTable();
-            }            
+            }
         }
 
         private void SetConnection()
         {
             sqlConnection = new SQLiteConnection("Data Source=Music.sqlite;Version=3;New=False;Compress=True;");
         }
-        
+
         private void CreateTable()
         {
             SQLiteConnection.CreateFile("Music.sqlite");
-            ExecuteQuery("create table songs (id INTEGER PRIMARY KEY, title varchar(30), performer varchar(30), duration varchar(30), album varchar(30), year int, path varchar(30))");
+            ExecuteQuery("create table songs (id INTEGER PRIMARY KEY, title varchar(30), performer varchar(30), duration varchar(30), album varchar(30), year int, fullName varchar(30))");
+            
         }
 
         private void ExecuteQuery(string txtQuery)
@@ -40,29 +42,43 @@ namespace Kadan
             sqlConnection.Close();
         }
 
-        public void updateSongInDB(Song song, string title) {
-            ExecuteQuery("UPDATE songs SET title = '" + song.Title + "', performer = '" + song.Performer + "', duration = '" + song.Duration + "', album = '" + song.Album + "', year = " + song.Year + ", path =  '" + song.Path + "' WHERE id = " + song.Id);
+        public void updateSongInDB(Song song)
+        {
+            ExecuteQuery("UPDATE songs SET title = '" + song.Title + "', performer = '" + song.Performer + "', album = '" + song.Album + "', year = " + song.Year + " WHERE id = " + song.Id);
         }
 
-        public void uploadToDB(List<Song> songs) {
-            foreach (Song song in songs) {
-                ExecuteQuery("insert or replace into songs (title, performer, duration, album, year, path) values ('" + song.Title + "', '" + song.Performer + "', '" + song.Duration + "', '" + song.Album + "', " + song.Year + ", '" + song.Path + "' )");
+        public void deleteSongFromDB(Song song)
+        {
+            ExecuteQuery("delete from songs where id = " + song.Id);
+        }
+
+        public void uploadToDB(List<Song> songs)
+        {
+
+            foreach (Song song in songs)
+            {
+                string get = "select id from songs where fullName = '" + song.FullName + "'";
+                List<string> idList = selectStateWithQuery(get);
+                if (idList.Count > 0)
+                {
+                    foreach (string id in idList)
+                    {
+                        ExecuteQuery("delete from songs where id = " + id);
+                    }
+                }
+                ExecuteQuery("insert into songs (title, performer, duration, album, year, fullName) values ('" + song.Title + "', '" + song.Performer + "', '" + song.Duration + "', '" + song.Album + "', " + song.Year + ", '" + song.FullName + "')");
             }
         }
 
         public void clearDB()
         {
             SetConnection();
-            ExecuteQuery("delete from songs");  
+            ExecuteQuery("delete from songs");
         }
 
         public List<Song> LoadData()
         {
-            SetConnection();
-            sqlConnection.Open();
-            sqlCommand = sqlConnection.CreateCommand();
-            sqlCommand.CommandText = "select id, title, performer, duration, album, year, path from songs";
-            SQLiteDataReader reader = sqlCommand.ExecuteReader();
+            SQLiteDataReader reader = executeSelect("select id, title, performer, duration, album, year, fullName from songs");
 
             List<Song> songs = new List<Song>();
             while (reader.Read())
@@ -72,6 +88,45 @@ namespace Kadan
             }
             sqlConnection.Close();
             return songs;
+        }
+
+        public List<Song> LoadData(string str)
+        {
+            SQLiteDataReader reader = executeSelect(str);
+
+            List<Song> songs = new List<Song>();
+            while (reader.Read())
+            {
+                Song song = new Song(reader);
+                songs.Add(song);
+            }
+            sqlConnection.Close();
+            return songs;
+        }
+
+        private SQLiteDataReader executeSelect(string str)
+        {
+            SetConnection();
+            sqlConnection.Open();
+            sqlCommand = sqlConnection.CreateCommand();
+            sqlCommand.CommandText = str;
+            SQLiteDataReader reader = sqlCommand.ExecuteReader();
+
+            return reader;
+        }
+
+        public List<String> selectStateWithQuery(string str)
+        {
+
+            SQLiteDataReader reader = executeSelect(str);
+
+            List<string> ids = new List<string>();
+            while (reader.Read())
+            {
+                ids.Add(reader["id"].ToString());
+            }
+            sqlConnection.Close();
+            return ids;
         }
     }
 }

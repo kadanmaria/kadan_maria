@@ -16,30 +16,22 @@ namespace Kadan
         public string Duration { get; set; }
         public string Album { get; set; }
         public string Year { get; set; }
-        public string Path { get; set; }
-        public string PreviousTitle { get; set; }
+        public string FullName { get; set; }
+
+        private string quote = "'";
+        private string quoteHTML = "&#39";
 
         public Song() {
         }
 
-        public Song(int id, string title, string performer, string album, string duration, string year, string path) {
-            this.Id = id;
-            this.Title = title;
-            this.Performer = performer;
-            this.Album = album;
-            this.Duration = duration;
-            this.Year = year;
-            this.Path = path;
-        }
-
-        public Song(TagLib.File audioFile, string path) {
+        public Song(TagLib.File audioFile, string path, string fullName) {
             this.Title = audioFile.Tag.Title == null ? @"Title " : audioFile.Tag.Title;
             this.Performer = audioFile.Tag.FirstPerformer == null ? @"Performer " : audioFile.Tag.FirstPerformer;
             this.Album = audioFile.Tag.Album == null ? @"Album " : audioFile.Tag.Album;
-            this.Duration = audioFile.Properties.Duration.ToString("mm\\:ss");
-            this.Year = audioFile.Tag.Year.ToString();
-            this.Path = path;
-            updateQuotes();
+            this.Duration = audioFile.Properties.Duration.ToString("mm\\:ss") == null ? @"Duration " : audioFile.Properties.Duration.ToString("mm\\:ss");
+            this.Year = audioFile.Tag.Year.ToString() == null ? @"Year " : audioFile.Tag.Year.ToString();
+            this.FullName = fullName == null ? @"FullName " : fullName;
+            updateQuotes(quote, quoteHTML);
         }
         
         public Song(SQLiteDataReader reader) {
@@ -49,7 +41,8 @@ namespace Kadan
             this.Album = reader["album"].ToString();
             this.Duration = reader["duration"].ToString();
             this.Year = reader["year"].ToString();
-            this.Path = reader["path"].ToString();
+            this.FullName = reader["fullName"].ToString();
+            updateQuotes(quoteHTML, quote);
         }
 
         public Song(System.Collections.IList selectedItem)
@@ -57,28 +50,41 @@ namespace Kadan
             foreach (var item in selectedItem)
             {
                 var song = item as Song;
-                songWithSong(song);
+
+                this.Id = song.Id;
+                this.Title = song.Title;
+                this.Performer = song.Performer;
+                this.Album = song.Album;
+                this.Duration = song.Duration;
+                this.Year = song.Year;
+                this.FullName = song.FullName;
             }
         }
 
-        private void updateQuotes()
+        private void updateQuotes(string from, string to)
         {
-            if (Title.Contains("'") && Title != null)  
-                Title = Title.Replace("'", " ");
-            if (Album.Contains("'") && Album != null)
-                Album = Album.Replace("'", " ");
-            if (Performer.Contains("'") && Performer != null)
-                Performer = Performer.Replace("'", " ");
+            if (Title.Contains(from) && Title != null)  
+                Title = Title.Replace(from, to);
+            if (Album.Contains(from) && Album != null)
+                Album = Album.Replace(from, to);
+            if (Performer.Contains(from) && Performer != null)
+                Performer = Performer.Replace(from, to);
+            if (Year.Contains(from) && Year != null)
+                Year = Year.Replace(from, to);
+            if (FullName.Contains(from) && FullName != null)
+                FullName = FullName.Replace(from, to);
+            if (Duration.Contains(from) && Duration != null)
+                Duration = Duration.Replace(from, to);
         }
 
-        private void songWithSong(Song song) {
+        public Song(Song song) {
             this.Id = song.Id;
             this.Title = song.Title;
             this.Performer = song.Performer;
             this.Album = song.Album;
             this.Duration = song.Duration;
             this.Year = song.Year;
-            this.Path = song.Path;
+            this.FullName = song.FullName;
         }
     }
 }

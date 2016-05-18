@@ -62,23 +62,39 @@ namespace Kadan
             this.Hide();
         }
 
+        private void Window_ContentRendered(object sender, EventArgs e) {
+            foreach (var item in dataGrid.Columns)
+            {
+                if (item.Header.ToString() != "Id" && item.Header.ToString() != "FullName")
+                {
+                    comboBox.Items.Add(item.Header);
+                }
+            }
+
+            foreach (var item in dataGrid.Columns)
+            {
+                if (item.Header.ToString() == "Id" || item.Header.ToString() == "FullName")
+                {
+                    item.Visibility = Visibility.Collapsed;
+                }
+            }
+        }
+
         //Delegate
         private void gotMessage(String message) {
-            label.Content = message;
+            //.Content = message;
         }
 
         private void gotListFromMetadata(List<Song> list) {
             dataGrid.ItemsSource = list;
         }
 
-        private void updateMeta_Click(object sender, RoutedEventArgs e)
+        private void button_Click(object sender, RoutedEventArgs e)
         {
-            List<Song> songs = new List<Song>();
-            foreach (var item in dataGrid.Items) {
-                var song = item as Song;
-                songs.Add(song);
-            }
-            musicManager.saveUpdatesToMetadata(songs);
+            Dictionary<String, String> args = new Dictionary<string, string>();
+            args.Add(comboBox.SelectedValue.ToString().ToLower(), textBox.Text);
+
+            musicManager.searchInDBWithOptions(args);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Kadan
 
         public delegate void MusicManagerSuccessDelegate(List<Song> dictionary);
         MusicManagerSuccessDelegate successDelegate;
-
+        
         public void RegisterMessageDelegate(MusicManagerMessageDelegate myDelegate) {
             this.messageDelegate = myDelegate;
         }
@@ -57,7 +57,7 @@ namespace Kadan
                     foreach (FileInfo file in dir.GetFiles("*.mp3"))
                     {
                         var audioFile = TagLib.File.Create(file.FullName);
-                        Song song = new Song(audioFile, folderPath);
+                        Song song = new Song(audioFile, folderPath, file.FullName);
                         songs.Add(song);
                         count++;
                     }
@@ -77,17 +77,39 @@ namespace Kadan
                 }
             }
         }
+        
+        public void saveUpdatesToMetadata(Song song) {
+            SQLConnector connector = new SQLConnector();
+            this.connector = connector;
 
-        public void saveUpdatesToMetadata(List<Song> songs) {
-            foreach (var song in songs)
+            if (System.IO.File.Exists(song.FullName))
             {
-                var path = song.Path;
-                DirectoryInfo dir = new DirectoryInfo(path);
-                if (dir.Exists)
+                using (var fileSong = TagLib.File.Create(song.FullName))
                 {
+                    string[] performers = new string[] { song.Performer };
+                    fileSong.Tag.Title = song.Title;
+                    fileSong.Tag.Performers = performers;
+                    fileSong.Tag.Year = (uint)Convert.ToInt32(song.Year);
+                    fileSong.Tag.Album = song.Album;
 
+                    fileSong.Save();
+
+                    messageDelegate("Saved!");
+                    this.connector.updateSongInDB(song);
                 }
             }
+            else {
+                messageDelegate("No such song!");
+                this.connector.deleteSongFromDB(song);
+            }      
+        }
+
+        public void searchInDBWithOptions(Dictionary<String, String>  args) {
+            string query = "select id, title, performer, duration, album, year, fullName from songs where";
+            foreach (var item in args.Keys) {
+                query = string.Concat(query," " + item + " = '" + args[item] + "'");
+            }
+            successDelegate(connector.LoadData(query));
         }
     }
 
