@@ -8,7 +8,7 @@ using System.Data.SQLite;
 
 namespace Kadan
 {
-    class Song
+    public class Song
     {
         public string Title { get; set; }
         public string Performer { get; set; }
@@ -37,6 +37,19 @@ namespace Kadan
             this.Duration = reader["duration"].ToString();
             this.Year = reader["year"].ToString();
             this.Path = reader["path"].ToString();
+        }
+        public Song(System.Collections.IList selectedItem)
+        {
+            foreach (var item in selectedItem)
+            {
+                var song = item as Song;
+                this.Title = song.Title;
+                this.Performer = song.Performer;
+                this.Album = song.Album;
+                this.Duration = song.Duration;
+                this.Year = song.Year;
+                this.Path = song.Path;
+            }
         }
 
         private void updateQuotes()

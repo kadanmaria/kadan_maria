@@ -5,8 +5,23 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Kadan"
         mc:Ignorable="d"
-        Title="EditWindow" Height="600" Width="1000">
+        Closing="Window_Closing"
+        Title="EditWindow" Height="400" Width="400">
     <Grid>
-        
+        <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Left" Margin="285,325,0,0" VerticalAlignment="Top" Width="80"/>
+        <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Left" Margin="186,325,0,0" VerticalAlignment="Top" Width="80"/>
+        <TextBox x:Name="TitleTextBox" HorizontalAlignment="Left" Height="23" Margin="114,36,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" />
+        <TextBox x:Name="PerformerTextBox" HorizontalAlignment="Left" Height="23" Margin="114,81,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" />
+        <TextBox x:Name="AlbumTextBox" HorizontalAlignment="Left" Height="23" Margin="114,129,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" />
+        <TextBox x:Name="YearTextBox" HorizontalAlignment="Left" Height="22" Margin="114,176,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="DurationTextBox" HorizontalAlignment="Left" Height="22" Margin="114,218,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox x:Name="PathTextBox" HorizontalAlignment="Left" Height="24" Margin="114,262,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top"  IsReadOnly="True" Width="120" IsEnabled="False"/>
+        <Label x:Name="TitleLabel" Content="Title" HorizontalAlignment="Left" Margin="10,32,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="PerformerLabel" Content="Performer" HorizontalAlignment="Left" Margin="10,81,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="AlbumLabel" Content="Album" HorizontalAlignment="Left" Margin="10,129,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="YearLabel" Content="Year" HorizontalAlignment="Left" Margin="10,176,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="DurationLabel" Content="Duration" HorizontalAlignment="Left" Margin="10,218,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="PathLabel" Content="Path" HorizontalAlignment="Left" Margin="10,262,0,0" VerticalAlignment="Top"/>
+
     </Grid>
 </Window>

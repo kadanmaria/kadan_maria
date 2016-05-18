@@ -19,12 +19,17 @@ namespace Kadan
     /// </summary>
     public partial class EditWindow : Window
     {
-      //  Song selectedSong;
+        public Song SelectedSong { get; set; }
 
         public EditWindow()
         {
             InitializeComponent();
         }
-        
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            MainWindow main = new MainWindow();
+            main.Show();
+        }
     }
 }

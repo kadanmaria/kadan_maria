@@ -53,10 +53,11 @@ namespace Kadan
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
             var grid = sender as System.Windows.Controls.DataGrid;
             var selected = grid.SelectedItems;
-          //  Song song = new Song(selected);
-          //  selected.
 
+            Song song = new Song(selected);
             EditWindow editWindow = new EditWindow();
+            editWindow.SelectedSong = song;
+
             editWindow.Show();
             this.Hide();
         }
