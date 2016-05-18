@@ -77,8 +77,8 @@ namespace Kadan
             foreach (var item in dataGrid.Items) {
                 var song = item as Song;
                 songs.Add(song);
-                Console.WriteLine(song.Title);
             }
+            musicManager.saveUpdatesToMetadata(songs);
         }
     }
 }

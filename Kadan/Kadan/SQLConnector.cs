@@ -40,7 +40,7 @@ namespace Kadan
             sqlConnection.Close();
         }
 
-        public void updateSongInDB(Song song) {
+        public void updateSongInDB(Song song, string title) {
             ExecuteQuery("UPDATE songs SET title = '" + song.Title + "', performer = '" + song.Performer + "', duration = '" + song.Duration + "', album = '" + song.Album + "', year = " + song.Year + ", path =  '" + song.Path + "' WHERE id = " + song.Id);
         }
 

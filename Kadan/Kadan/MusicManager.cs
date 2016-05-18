@@ -79,9 +79,14 @@ namespace Kadan
         }
 
         public void saveUpdatesToMetadata(List<Song> songs) {
-            foreach (var song in songs) {
+            foreach (var song in songs)
+            {
                 var path = song.Path;
+                DirectoryInfo dir = new DirectoryInfo(path);
+                if (dir.Exists)
+                {
 
+                }
             }
         }
     }

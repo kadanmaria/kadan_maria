@@ -17,6 +17,7 @@ namespace Kadan
         public string Album { get; set; }
         public string Year { get; set; }
         public string Path { get; set; }
+        public string PreviousTitle { get; set; }
 
         public Song() {
         }

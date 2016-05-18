@@ -37,9 +37,10 @@ namespace Kadan
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            string previousTitle = SelectedSong.Title;
             Song song = new Song(SelectedSong.Id, this.TitleTextBox.Text, this.PerformerTextBox.Text, this.AlbumTextBox.Text, this.DurationTextBox.Text, this.YearTextBox.Text, this.PathTextBox.Text);
             SQLConnector connector = new SQLConnector();
-            connector.updateSongInDB(song);
+            connector.updateSongInDB(song, previousTitle);
 
             Window_Closing(sender, null);
         }
