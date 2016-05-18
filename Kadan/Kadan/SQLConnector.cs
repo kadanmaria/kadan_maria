@@ -27,8 +27,7 @@ namespace Kadan
         private void CreateTable()
         {
             SQLiteConnection.CreateFile("Music.sqlite");
-            string sql = "create table songs (title varchar(30), performer varchar(30), duration varchar(30), album varchar(30), year int, path varchar(30))";
-            ExecuteQuery(sql);
+            ExecuteQuery("create table songs (title varchar(30), performer varchar(30), duration varchar(30), album varchar(30), year int, path varchar(30))");
         }
 
         private void ExecuteQuery(string txtQuery)

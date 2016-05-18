@@ -42,15 +42,23 @@ namespace Kadan
             {
                 dataGrid.ItemsSource = null;
                 string path = dialog.SelectedPath;
-               // path = "D:/Music/test";
-
                 musicManager.getAllAudioFromFolderWithPath(path);
             }
         }
 
-        private void button_ClearClick(object sender, RoutedEventArgs e)
-        {
+        private void button_ClearClick(object sender, RoutedEventArgs e) {
             musicManager.clearAllAudioFromDB();
+        }
+
+        private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            var grid = sender as System.Windows.Controls.DataGrid;
+            var selected = grid.SelectedItems;
+          //  Song song = new Song(selected);
+          //  selected.
+
+            EditWindow editWindow = new EditWindow();
+            editWindow.Show();
+            this.Hide();
         }
 
         //Delegate
@@ -61,5 +69,6 @@ namespace Kadan
         private void gotListFromMetadata(List<Song> list) {
             dataGrid.ItemsSource = list;
         }
+        
     }
 }
