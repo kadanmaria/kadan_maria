@@ -22,6 +22,7 @@ namespace Kadan
     public partial class MainWindow : Window
     {
         private MusicManager musicManager;
+        private Dictionary<String, String> args;
 
         //Main method
         public MainWindow() {
@@ -29,10 +30,10 @@ namespace Kadan
 
             MusicManager musicManager = new MusicManager();
             musicManager.RegisterMessageDelegate(new MusicManager.MusicManagerMessageDelegate(gotMessage));
-            musicManager.RegisterSuccessDelegate(new MusicManager.MusicManagerSuccessDelegate(gotListFromMetadata));  
+            musicManager.RegisterSuccessDelegate(new MusicManager.MusicManagerSuccessDelegate(gotListFromMetadata));
             this.musicManager = musicManager;
 
-            this.musicManager.initializeWithMusicFromDB();
+            this.musicManager.updateData();
         }
 
         //Actions
@@ -70,40 +71,84 @@ namespace Kadan
                     comboBox.Items.Add(item.Header);
                 }
             }
-
-            foreach (var item in dataGrid.Columns)
-            {
-                if (item.Header.ToString() == "Id" || item.Header.ToString() == "FullName")
-                {
-                    item.Visibility = Visibility.Collapsed;
-                }
-            }
+            this.SearchButton.IsEnabled = false;
+            this.BackButton.IsEnabled = false;
         }
 
         //Delegate
         private void gotMessage(String message) {
-            //.Content = message;
         }
 
         private void gotListFromMetadata(List<Song> list) {
             dataGrid.ItemsSource = list;
         }
 
-        private void button_Click(object sender, RoutedEventArgs e)
+        private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            Dictionary<String, String> args = new Dictionary<string, string>();
-            if (comboBox.SelectedValue != null && textBox.Text != null)
-            {
-                args.Add(comboBox.SelectedValue.ToString().ToLower(), textBox.Text);
-                musicManager.searchInDBWithOptions(args);
-            }
+            musicManager.searchInDBWithOptions(args);
 
-            
+            comboBox.Items.Clear();
+            this.searchTextBox.Text = @"";
+
+            this.AddButton.IsEnabled = false;
+            this.BackButton.IsEnabled = true;
+            this.SearchButton.IsEnabled = false;
+            this.comboBox.IsEnabled = false;
+            this.searchTextBox.IsEnabled = false;
         }
 
-        private void Back_Click(object sender, RoutedEventArgs e)
+        private void BackButton_Click(object sender, RoutedEventArgs e)
         {
-            musicManager.initializeWithMusicFromDB();
+            this.AddButton.IsEnabled = true;
+            this.SearchButton.IsEnabled = false;
+            this.comboBox.IsEnabled = true;
+            this.searchTextBox.IsEnabled = true;
+            this.textBlock.Text = @"";
+
+            comboBox.Items.Clear();
+            foreach (var item in dataGrid.Columns)
+            {
+                if (item.Header.ToString() != "Id" && item.Header.ToString() != "FullName")
+                {
+                    comboBox.Items.Add(item.Header);
+                }
+            }
+
+            musicManager.updateData();
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.args == null)
+            {
+                Dictionary<String, String> args = new Dictionary<string, string>();
+                this.args = args;
+            }
+            if (comboBox.SelectedValue != null && searchTextBox.Text != null)
+            {
+                string s1 = comboBox.SelectedValue.ToString().ToLower().Replace("'", "&#39");
+                string s2 = searchTextBox.Text.Replace("'", "&#39");
+                args.Add(s1, s2);
+
+                this.textBlock.Text = string.Concat(this.textBlock.Text, comboBox.SelectedValue.ToString() + ": "+ searchTextBox.Text +"\n");
+                this.searchTextBox.Text = @"";
+                if (comboBox.Items.Count > 0)
+                {
+                    this.comboBox.Items.Remove(comboBox.SelectedValue);
+                } else
+                {
+                    this.AddButton.IsEnabled = false;
+
+                }
+            }
+            this.SearchButton.IsEnabled = true;
+           
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            comboBox.Items.Clear();
+
         }
     }
 }

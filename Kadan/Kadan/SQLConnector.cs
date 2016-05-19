@@ -83,10 +83,14 @@ namespace Kadan
             SQLiteDataReader reader = executeSelect("select id, title, performer, duration, album, year, fullName from songs");
 
             List<Song> songs = new List<Song>();
-            while (reader.Read())
+            if (reader != null)
             {
-                Song song = new Song(reader);
-                songs.Add(song);
+                while (reader.Read())
+                {
+                    Song song = new Song(reader);
+                    songs.Add(song);
+                }
+                
             }
             sqlConnection.Close();
             return songs;
@@ -97,10 +101,13 @@ namespace Kadan
             SQLiteDataReader reader = executeSelect(str);
 
             List<Song> songs = new List<Song>();
-            while (reader.Read())
+            if (reader != null)
             {
-                Song song = new Song(reader);
-                songs.Add(song);
+                while (reader.Read())
+                {
+                    Song song = new Song(reader);
+                    songs.Add(song);
+                }
             }
             sqlConnection.Close();
             return songs;
@@ -112,20 +119,26 @@ namespace Kadan
             sqlConnection.Open();
             sqlCommand = sqlConnection.CreateCommand();
             sqlCommand.CommandText = str;
-            SQLiteDataReader reader = sqlCommand.ExecuteReader();
+            SQLiteDataReader reader = null;
+            try {
+                reader = sqlCommand.ExecuteReader();
+            } catch
+            {
 
+            }
             return reader;
         }
 
         public List<String> selectStateWithQuery(string str)
         {
-
             SQLiteDataReader reader = executeSelect(str);
-
             List<string> ids = new List<string>();
-            while (reader.Read())
+            if (reader != null)
             {
-                ids.Add(reader["id"].ToString());
+                while (reader.Read())
+                {
+                    ids.Add(reader["id"].ToString());
+                }
             }
             sqlConnection.Close();
             return ids;
